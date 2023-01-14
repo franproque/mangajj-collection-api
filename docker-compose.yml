@@ -1,0 +1,42 @@
+version: '3.7'
+services:
+  nodejs:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+    image: nodejs
+    tty: true
+    privileged: true
+    stdin_open: true
+    container_name: ${PROJECT_NAME}-nodejs
+    env_file: .env
+    depends_on:
+      - database
+    ports:
+      - ${WEB_SERVER_PORT}:${PORT}
+    volumes:
+      - ./code:/home/node/app
+    networks:
+      - app-network
+  database:
+    image: postgres
+    command: "postgres -c max_connections=200"
+    container_name: ${PROJECT_NAME}-database
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+      - ./sql/database.sql:/docker-entrypoint-initdb.d/database.sql
+    ports:
+      - $DB_PORT:5432
+    environment:
+      TZ: America/Sao_Paulo
+      POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    networks:
+      - app-network
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  dbdata:

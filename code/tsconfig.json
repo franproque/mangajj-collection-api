@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "outDir": "./dist",
+        "rootDir": "./src",
+        "module": "commonjs",
+        "target": "ES2019",
+        "esModuleInterop": true,
+        "allowJs": true,
+        "strictNullChecks":true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "resolveJsonModule": true,
+        "baseUrl": "./",
+        "typeRoots": ["./node_modules/@types","./src/@types"]    
+    },
+    "exclude": [
+        "jest.config.ts"
+    ]
+}
