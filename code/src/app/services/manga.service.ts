@@ -96,6 +96,7 @@ export class MangaService {
       console.log(JSON.stringify(mangas))
       for(let manga of mangas.data) {
         console.log('manga', manga)
+        if(manga.volumes !== null) {
         await this.processAddManga({
           description: manga.synopsis,
           idExterno: manga.mal_id.toString(),
@@ -104,6 +105,7 @@ export class MangaService {
           volumes: manga.volumes,
           status: manga.status
         })
+      }
       }
 
       const resultado = await this.mangaRepository.pagination({
