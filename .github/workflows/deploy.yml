@@ -28,6 +28,6 @@ jobs:
             rm -R dist
             npm install
             npm run build
-            pm2 delete gestao-financeita-api
-            pm2 start --name "gestao-financeita-api" ${{secrets.REMOTE_TARGET}}/dist/main/server.js
+            pm2 delete manga-jj-api
+            pm2 start --name "manga-jj-api" ${{secrets.REMOTE_TARGET}}/dist/main/server.js
             
