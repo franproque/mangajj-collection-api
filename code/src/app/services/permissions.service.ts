@@ -39,11 +39,8 @@ export class PermissionsService {
 
   async loadPermissionsByFolder (folder?: string): Promise<void> {
     let arquivos: string[] = []
-    if (folder === undefined) {
-      arquivos = fg.sync(join(__dirname, '../presentation/controllers/**/*Controller.ts'))
-    } else {
-      arquivos = fg.sync(join(__dirname, '../../pluguins/' + folder + '/app/presentation/controllers/**/*Controller.ts'))
-    }
+    arquivos = fg.sync(join(__dirname, '../presentation/controllers/**/*Controller.ts'))
+    
     for (const path of arquivos) {
       console.log(path)
       const { routeInfo }: any = (await import(path))
