@@ -45,6 +45,7 @@
     "formidable": "^2.1.1",
     "jsonwebtoken": "^8.5.1",
     "pg": "^8.8.0",
+    "sqlite3": "^5.1.4",
     "uuid": "^9.0.0",
     "validar-telefone": "^0.1.0"
   }
