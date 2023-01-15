@@ -18,12 +18,18 @@ jobs:
           REMOTE_USER: ${{secrets.REMOTE_USER}}
           TARGET: ${{ secrets.REMOTE_TARGET }}
       - name: Execute Bash start
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@v0.1.7
         with:
           host: ${{ secrets.REMOTE_HOST }}
           username: ${{ secrets.REMOTE_USER }}
           key: ${{secrets.SERVER_SSH}}
           script: |
-            cd /var/www/mangajjcollectionapi
-           
+            cd ${{secrets.REMOTE_TARGET}}
+            ls
+            rm -R dist
+            ls
+            npm install
+            npm run build
+            pm2 delete manga-jj-api
+            pm2 start --name "manga-jj-api" ${{secrets.REMOTE_TARGET}}/dist/main/server.js
             
