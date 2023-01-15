@@ -39,12 +39,10 @@ export class PermissionsService {
 
   async loadPermissionsByFolder (folder?: string): Promise<void> {
     let arquivos: string[] = []
-    arquivos = fg.sync(join(__dirname, '../presentation/controllers/**/*Controller.ts'))
+    arquivos = fg.sync(join(__dirname, '../presentation/controllers/**/*Controller{.ts,.js}'))
     
     for (const path of arquivos) {
-      console.log(path)
       const { routeInfo }: any = (await import(path))
-      console.log(routeInfo)
       const slug = routeInfo.name.toLowerCase().replace(/\s+/g, '-')
       const permission = await this.find({
         where: {

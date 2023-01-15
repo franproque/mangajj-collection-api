@@ -6,7 +6,7 @@ export class JikanRepository {
   }
 
   async findManga (page = 1, limit = 10, search = ''): Promise<ListagemMangas> {
-    const { data } = await axios.get(`${this.baseUrl}/manga?q=${search}&page=${page}&limit=${limit}&order_by=popularity&type=manga`)
+    const { data } = await axios.get(`${this.baseUrl}/manga?q=${search}&page=${page}&limit=${limit}&order_by=title&type=manga`)
     return data
   }
 }
