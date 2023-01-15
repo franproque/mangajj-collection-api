@@ -1,6 +1,7 @@
-import { Column, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
 import Collection from './collection'
 
+@Entity()
 export default class Manga {
   @PrimaryGeneratedColumn('increment', { name: 'id' })
   id: number
