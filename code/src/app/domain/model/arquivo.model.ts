@@ -1,5 +1,3 @@
-import { IconeModel } from './icone.model'
-
 export interface ArquivoModel {
   id: number
   mimetype: string
@@ -10,5 +8,4 @@ export interface ArquivoModel {
   mtime: Date
   dt_criacao: Date
   dt_atualizacao: Date
-  icones?: IconeModel[]
 }
