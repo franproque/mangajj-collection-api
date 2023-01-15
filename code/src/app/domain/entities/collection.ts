@@ -13,6 +13,7 @@ export default class Collection {
   manga: Manga
 
   @ManyToOne(type => User, user => user.collections)
+  @JoinColumn({ name: 'user_id' })
   user: User
 
   @CreateDateColumn({ name: 'dt_criacao' })

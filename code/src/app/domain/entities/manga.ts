@@ -15,10 +15,10 @@ export default class Manga {
   @Column('varchar', { name: 'image', nullable: false })
   image: string
 
-  @Column('varchar', { name: 'author', nullable: false })
+  @Column('varchar', { name: 'volumes', nullable: false })
   volumes: number
 
-  @Column('varchar', { name: 'author', nullable: false })
+  @Column('varchar', { name: 'id_externo', nullable: false })
   idExterno: string
 
   @Column('varchar', { name: 'status', nullable: false })
