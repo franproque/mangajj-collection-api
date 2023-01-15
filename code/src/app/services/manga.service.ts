@@ -93,7 +93,9 @@ export class MangaService {
 
     if(resultado.data.data.length === 0) {
       const mangas = await this.jikanRepository.findManga(1, 100, pagination.search)
+      console.log(JSON.stringify(mangas))
       for(let manga of mangas.data) {
+        console.log('manga', manga)
         await this.processAddManga({
           description: manga.synopsis,
           idExterno: manga.mal_id.toString(),
