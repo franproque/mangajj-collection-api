@@ -10,6 +10,7 @@ export default async (app: Express): Promise<void> => {
   let controllers = fg.sync(join(__dirname, '../../app/presentation/controllers/**{.ts,.js}'))
   controllers = controllers.concat(fg.sync(join(__dirname, '../../pluguins/**/app/presentation/controllers/**{.ts,.js}')))
   controllers.map(async (file) => {
+    console.log(file)
     const fileImport = (await import(`${file}`))
     let routeInfo: RouterInfo|undefined
     let controller: any
