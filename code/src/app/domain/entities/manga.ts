@@ -20,6 +20,9 @@ export default class Manga {
   @Column('varchar', { name: 'author', nullable: false })
   idExterno: string
 
+  @Column('varchar', { name: 'status', nullable: false })
+  status: string
+
   @OneToMany(type => Collection, collection => collection.manga)
   collections?: Collection[]
 }

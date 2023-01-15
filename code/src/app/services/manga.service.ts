@@ -1,13 +1,15 @@
 import { MangaModel } from '../domain/model/manga.model'
 import { FindProps } from '../infra/interfaces/find-props.interface'
+import { PaginationResponse, SearchParams } from '../infra/interfaces/pagination/pagination.interface'
 import { MangaRepository } from '../infra/repositories/manga-repository'
 import { MissingParamError } from '../presentation/errors'
-
+import { JikanRepository} from '../infra/repositories-external/jikan.repository'
 export class MangaService {
   private readonly mangaRepository: MangaRepository
-
+  private readonly jikanRepository: JikanRepository
   constructor () {
     this.mangaRepository = new MangaRepository()
+    this.jikanRepository = new JikanRepository()
   }
 
   async find (props: FindProps): Promise<MangaModel[]> {
@@ -71,6 +73,49 @@ export class MangaService {
     await this.validInputCreate(manga)
     return await this.addManga(manga)
   }
+
+  async pagination (pagination: PaginationMangaModel): Promise<PaginationResponse<MangaModel>> {
+    const query: SearchParams[] = []
+
+    if (pagination.search !== undefined && pagination.search !== null && pagination.search !== '') {
+      query.push({
+        param: 'title',
+        type: 'ilike',
+        value: pagination.search
+      })
+    }
+    const resultado = await this.mangaRepository.pagination({
+      limit: pagination.limit,
+      model: 'mangas',
+      page: pagination.page,
+      search: query
+    })
+
+    if(resultado.data.data.length === 0) {
+      const mangas = await this.jikanRepository.findManga(1, 100, pagination.search)
+      for(let manga of mangas.data) {
+        await this.processAddManga({
+          description: manga.synopsis,
+          idExterno: manga.mal_id.toString(),
+          image: manga.images.jpg.image_url,
+          title: manga.title,
+          volumes: manga.volumes,
+          status: manga.status
+        })
+      }
+
+      const resultado = await this.mangaRepository.pagination({
+        limit: pagination.limit,
+        model: 'mangas',
+        page: pagination.page,
+        search: query
+      })
+
+      return resultado
+    } else {
+      return resultado
+    }
+  }
 }
 
 export interface UpdateMangaModel {
@@ -80,6 +125,7 @@ export interface UpdateMangaModel {
   image: string
   volumes: number
   idExterno: string
+  status: string
 }
 export interface AddMangaModel {
   title: string
@@ -87,4 +133,11 @@ export interface AddMangaModel {
   image: string
   volumes: number
   idExterno: string
+  status: string
+}
+
+export interface PaginationMangaModel {
+  page: number
+  limit: number
+  search: string
 }

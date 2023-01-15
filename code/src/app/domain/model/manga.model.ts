@@ -8,4 +8,5 @@ export interface MangaModel {
   volumes: number
   idExterno: string
   collections?: CollectionModel[]
+  status: string
 }

@@ -2,7 +2,6 @@ import { AuthenticationService } from '../../../../app/services/authentication.s
 import { MissingParamError } from '../../errors'
 import { serverError, success } from '../../helpers/http-helpers'
 import { Controller } from '../../protocolos'
-import { PessoaService } from '../../../services/pessoa.service'
 export const routeInfo = {
   path: '/authentication',
   method: 'post',
@@ -14,10 +13,8 @@ export const routeInfo = {
 }
 export class AuthenticationController implements Controller {
   private readonly authenticationService: AuthenticationService
-  private readonly pessoaService: PessoaService
   constructor () {
     this.authenticationService = new AuthenticationService()
-    this.pessoaService = new PessoaService()
   }
 
   async handle (httpRequest: any): Promise<any> {
@@ -27,13 +24,9 @@ export class AuthenticationController implements Controller {
         throw new MissingParamError('email ou senha')
       }
 
-      const [token, pessoas] = await Promise.all([this.authenticationService.login(email, senha), this.pessoaService.find({
-        where: {
-          user: email
-        }
-      })])
+      const [token] = await Promise.all([this.authenticationService.login(email, senha)])
 
-      return success({ token, peoples: pessoas.length > 0 })
+      return success({ token })
     } catch (error) {
       return serverError(httpRequest.nextFunction, error)
     }
