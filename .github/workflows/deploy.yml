@@ -24,6 +24,6 @@ jobs:
           username: ${{ secrets.REMOTE_USER }}
           key: ${{secrets.SERVER_SSH}}
           script: |
-            cd '/var/www/mangajjcollectionapi'
+            cd /var/www/mangajjcollectionapi
            
             
