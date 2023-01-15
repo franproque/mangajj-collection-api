@@ -26,8 +26,5 @@ jobs:
           script: |
             cd ${{secrets.REMOTE_TARGET}}
             rm -R dist
-            npm install
-            npm run build
-            pm2 delete manga-jj-api
-            pm2 start --name "manga-jj-api" ${{secrets.REMOTE_TARGET}}/dist/main/server.js
+           
             
