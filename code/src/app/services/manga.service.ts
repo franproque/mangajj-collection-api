@@ -94,7 +94,7 @@ export class MangaService {
     if(resultado.data.data.length === 0) {
       const mangas = await this.jikanRepository.findManga(pagination.page, pagination.limit, pagination.search)
       for(let manga of mangas.data) {
-        if(manga.volumes !== null && manga.volumes !== undefined && manga.volumes !== 0 && manga.status !== null && manga.status !== undefined && manga.status !== '' && manga.synopsis !== null && manga.synopsis !== undefined && manga.synopsis !== '' && manga.images !== null && manga.images !== undefined && manga.images !== '' && manga.title !== null && manga.title !== undefined && manga.title !== '' && manga.mal_id !== null && manga.mal_id !== undefined && manga.mal_id !== 0) {
+        if(manga.volumes !== null && manga.title !== null && manga.synopsis!==null && manga.images!==null && manga.status!==null) {
         await this.processAddManga({
           description: manga.synopsis,
           idExterno: manga.mal_id.toString(),
