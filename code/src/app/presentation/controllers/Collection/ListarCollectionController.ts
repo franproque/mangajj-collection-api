@@ -25,7 +25,7 @@ export class ListarCollectionController implements Controller {
         page: Number(page),
         search: search,
         user: httpRequest.user.email,
-        relations: ['manga']
+        relations: ['manga', 'volumes']
       })
 
       return success(result)

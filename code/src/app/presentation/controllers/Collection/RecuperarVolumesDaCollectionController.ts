@@ -31,7 +31,7 @@ export class RecuperarVolumesDaCollectionControlle implements Controller {
           user: httpRequest.user.email,
           id: Number(id)
         },
-        relations: ['volumes', 'manga']
+        relations: ['volumes']
       })
 
       return success(result)
