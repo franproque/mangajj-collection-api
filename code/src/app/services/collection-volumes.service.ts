@@ -21,7 +21,10 @@ export class CollectionVolumesService {
   }
 
   async addCollectionVolumes (collectionVolumes: AddCollectionVolumesModel): Promise<CollectionVolumesModel> {
-    return await this.collectionVolumesRepository.add(collectionVolumes)
+    return await this.collectionVolumesRepository.add({
+      volumeNumero: collectionVolumes.volume,
+      collection: collectionVolumes.collection
+    })
   }
 
   async delete (id: number): Promise<void> {
@@ -52,7 +55,7 @@ export class CollectionVolumesService {
     const collectionVolumesResultSearch = await this.findOne({
       where: {
         collection: collectionSearch,
-        volume: collectionVolumes.volume
+        volumeNumero: collectionVolumes.volume
       }
     })
 
