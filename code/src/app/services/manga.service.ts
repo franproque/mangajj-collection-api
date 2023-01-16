@@ -26,15 +26,15 @@ export class MangaService {
   }
 
   async validInputCreate (manga: AddMangaModel): Promise<boolean> {
-    if (manga.title === '' || manga.title === undefined || manga.title === null) {
+    if ( manga.title === undefined || manga.title === null) {
       throw new MissingParamError('title')
     }
 
-    if (manga.description === '' || manga.description === undefined || manga.description === null) {
+    if ( manga.description === undefined || manga.description === null) {
       throw new MissingParamError('description')
     }
 
-    if (manga.image === '' || manga.image === undefined || manga.image === null) {
+    if ( manga.image === undefined || manga.image === null) {
       throw new MissingParamError('image')
     }
 
@@ -51,15 +51,15 @@ export class MangaService {
   }
 
   async validInputUpdate (manga: UpdateMangaModel): Promise<boolean> {
-    if (manga.title === '' || manga.title === undefined || manga.title === null) {
+    if (manga.title === undefined || manga.title === null) {
       throw new MissingParamError('title')
     }
 
-    if (manga.description === '' || manga.description === undefined || manga.description === null) {
+    if (manga.description === undefined || manga.description === null) {
       throw new MissingParamError('description')
     }
 
-    if (manga.image === '' || manga.image === undefined || manga.image === null) {
+    if (manga.image === undefined || manga.image === null) {
       throw new MissingParamError('image')
     }
 

@@ -15,7 +15,7 @@ export default class Manga {
   @Column('varchar', { name: 'image', nullable: false })
   image: string
 
-  @Column('varchar', { name: 'volumes', nullable: false })
+  @Column('integer', { name: 'volumes', nullable: false })
   volumes: number
 
   @Column('varchar', { name: 'id_externo', nullable: false })
