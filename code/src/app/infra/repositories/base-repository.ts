@@ -32,9 +32,14 @@ export class BaseRepository {
     return await repository.find(props)
   }
 
-  montedObject (array: string[], object: any, field: string, search: any): any {
-    for (const value of array) {
-      object[value] = value
+  montedObject (object: any, param: string, value: any): any {
+  // percorre todos os parametros do objeto e quando achar o ultimo parametro ele adiciona o valor
+    for (const key in object) {
+      if (key === param) {
+        object[param] = value
+      } else {
+        this.montedObject(object[key], param, value)
+      }
     }
     return object
   }
@@ -48,7 +53,7 @@ export class BaseRepository {
       if (value.subfiltro === undefined) {
         object[value.param] = ILike(`%${(value.value ?? '').toString()}%`)
       } else {
-        object = this.montedObject(value.subfiltro, object, value.param, ILike(`%${(value.value ?? '').toString()}%`))
+        object = this.montedObject(value.subfiltro, value.param, ILike(`%${(value.value ?? '').toString()}%`))
       }
       where.push(object)
     }

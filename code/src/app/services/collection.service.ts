@@ -51,7 +51,11 @@ export class CollectionService {
       query.push({
         param: 'title',
         type: 'ilike',
-        subfiltro: ['manga'],
+        subfiltro: {
+          manga: {
+            title: ''
+          }
+        },
         value: props.search
       })
     }
