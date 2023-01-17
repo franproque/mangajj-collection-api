@@ -18,6 +18,7 @@ export interface PaginationResponse<T> {
 }
 
 export interface SearchParams {
+  subfiltro?: string[]
   param: string
   type: string
   value: string | number | boolean | Date | null

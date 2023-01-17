@@ -3,6 +3,7 @@ import { PaginationFormatResponse, PaginationParams, PaginationResponse } from '
 import { getRepository, ILike, Repository } from 'typeorm'
 import { FindProps } from '../interfaces/find-props.interface'
 import { production } from '../../../main/config/variables'
+
 export class BaseRepository {
   private readonly model: string
   constructor (model: string) {
@@ -12,6 +13,7 @@ export class BaseRepository {
   async instanceRepository (): Promise<Repository<any>> {
     const model = (await import(`../../domain/entities/${this.model}.${production.isProd ? 'js' : 'ts'}`)).default
     const repository = getRepository(model)
+
     return repository
   }
 
@@ -30,13 +32,24 @@ export class BaseRepository {
     return await repository.find(props)
   }
 
+  montedObject (array: string[], object: any, field: string, search: any): any {
+    for (const value of array) {
+      object[value] = value
+    }
+    return object
+  }
+
   async paginationBase (props: PaginationParams): Promise<PaginationResponseRepository> {
     const repository = await this.instanceRepository()
     const where: any[] = []
     const resultIlike = props.search.filter((value) => value.type === 'ilike')
     for (const value of resultIlike) {
-      const object: any = {}
-      object[value.param] = ILike(`%${(value.value ?? '').toString()}%`)
+      let object: any = {}
+      if (value.subfiltro === undefined) {
+        object[value.param] = ILike(`%${(value.value ?? '').toString()}%`)
+      } else {
+        object = this.montedObject(value.subfiltro, object, value.param, ILike(`%${(value.value ?? '').toString()}%`))
+      }
       where.push(object)
     }
 
