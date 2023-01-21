@@ -3,7 +3,7 @@ import { FindProps } from '../infra/interfaces/find-props.interface'
 import { PaginationResponse, SearchParams } from '../infra/interfaces/pagination/pagination.interface'
 import { MangaRepository } from '../infra/repositories/manga-repository'
 import { MissingParamError } from '../presentation/errors'
-import { JikanRepository} from '../infra/repositories-external/jikan.repository'
+import { JikanRepository } from '../infra/repositories-external/jikan.repository'
 export class MangaService {
   private readonly mangaRepository: MangaRepository
   private readonly jikanRepository: JikanRepository
@@ -26,15 +26,15 @@ export class MangaService {
   }
 
   async validInputCreate (manga: AddMangaModel): Promise<boolean> {
-    if ( manga.title === undefined || manga.title === null) {
+    if (manga.title === undefined || manga.title === null) {
       throw new MissingParamError('title')
     }
 
-    if ( manga.description === undefined || manga.description === null) {
+    if (manga.description === undefined || manga.description === null) {
       throw new MissingParamError('description')
     }
 
-    if ( manga.image === undefined || manga.image === null) {
+    if (manga.image === undefined || manga.image === null) {
       throw new MissingParamError('image')
     }
 
@@ -91,19 +91,19 @@ export class MangaService {
       search: query
     })
 
-    if(resultado.data.data.length === 0) {
+    if (resultado.data.data.length === 0) {
       const mangas = await this.jikanRepository.findManga(pagination.page, pagination.limit, pagination.search)
-      for(let manga of mangas.data) {
-        if(manga.volumes !== null ) {
-        await this.processAddManga({
-          description: manga.synopsis ?? '',
-          idExterno: manga.mal_id.toString(),
-          image: manga.images.jpg.image_url,
-          title: manga.title ?? '',
-          volumes: manga.volumes,
-          status: manga.status ?? ''
-        })
-      }
+      for (const manga of mangas.data) {
+        if (manga.volumes !== null) {
+          await this.processAddManga({
+            description: manga.synopsis ?? '',
+            idExterno: manga.mal_id.toString(),
+            image: manga.images.jpg.image_url,
+            title: manga.title ?? '',
+            volumes: manga.volumes,
+            status: manga.status ?? ''
+          })
+        }
       }
 
       const resultado = await this.mangaRepository.pagination({
