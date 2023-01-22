@@ -33,10 +33,12 @@ export class CollectionVolumesService {
 
   async processAddCollectionVolumes (collectionVolumes: AddCollectionVolumeAndCreateCollectionModel): Promise<CollectionVolumesModel|null> {
     let collectionSearch: number|undefined
+
     if (collectionVolumes.collection !== undefined && collectionVolumes.collection !== null) {
       const collectionResult = await this.collectionService.findOne({
         where: {
-          id: collectionVolumes.collection
+          id: collectionVolumes.collection,
+          user: collectionVolumes.user
         }
       })
 
@@ -44,12 +46,22 @@ export class CollectionVolumesService {
         collectionSearch = collectionResult.id
       }
     } else {
-      const collectionResult = await this.collectionService.processAddCollection({
-        manga: collectionVolumes.manga,
-        user: collectionVolumes.user
+      const collectionResultManga = await this.collectionService.findOne({
+        where: {
+          user: collectionVolumes.user,
+          manga: collectionVolumes.manga
+        }
       })
+      if (collectionResultManga !== null) {
+        collectionSearch = collectionResultManga.id
+      } else {
+        const collectionResult = await this.collectionService.processAddCollection({
+          manga: collectionVolumes.manga,
+          user: collectionVolumes.user
+        })
 
-      collectionSearch = collectionResult.id
+        collectionSearch = collectionResult.id
+      }
     }
 
     const collectionVolumesResultSearch = await this.findOne({
@@ -66,6 +78,15 @@ export class CollectionVolumesService {
       })
     } else {
       await this.delete(collectionVolumesResultSearch?.id ?? 0)
+      const resultadoDosVolumes = await this.find({
+        where: {
+          collection: collectionSearch
+        }
+      })
+
+      if (resultadoDosVolumes.length === 0) {
+        if (collectionSearch !== undefined) { await this.collectionService.delete(collectionSearch) }
+      }
       return collectionVolumesResultSearch
     }
   }

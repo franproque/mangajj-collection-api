@@ -90,30 +90,30 @@ export class MangaService {
       page: pagination.page,
       search: query
     })
-
+    console.log(resultado.data.data.length === 0)
     if (resultado.data.data.length === 0) {
       const mangas = await this.jikanRepository.findManga(pagination.page, pagination.limit, pagination.search)
+      console.log(mangas.data)
       for (const manga of mangas.data) {
-        if (manga.volumes !== null) {
-          await this.processAddManga({
-            description: manga.synopsis ?? '',
-            idExterno: manga.mal_id.toString(),
-            image: manga.images.jpg.image_url,
-            title: manga.title ?? '',
-            volumes: manga.volumes,
-            status: manga.status ?? ''
-          })
-        }
+        const result = await this.processAddManga({
+          description: manga.synopsis ?? '',
+          idExterno: manga.mal_id.toString(),
+          image: manga.images.jpg.image_url,
+          title: manga.title ?? '',
+          volumes: manga.volumes ?? 1,
+          status: manga.status ?? ''
+        })
+        console.log('result', result)
       }
 
-      const resultado = await this.mangaRepository.pagination({
+      const resultadoBusca = await this.mangaRepository.pagination({
         limit: pagination.limit,
         model: 'mangas',
         page: pagination.page,
         search: query
       })
 
-      return resultado
+      return resultadoBusca
     } else {
       return resultado
     }

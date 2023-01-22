@@ -4,7 +4,7 @@ import { HttpResponse } from '../protocolos'
 export const serverError = (next: Function, error: BaseError): HttpResponse => {
   console.log(error)
   return {
-    statusCode: error.statusCode|500,
+    statusCode: error.statusCode ?? 500,
     body: {
       name: error.name,
       message: error.message,

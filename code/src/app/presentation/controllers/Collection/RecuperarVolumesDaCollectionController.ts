@@ -29,7 +29,7 @@ export class RecuperarVolumesDaCollectionControlle implements Controller {
       const result = await this.collectionService.findOne({
         where: {
           user: httpRequest.user.email,
-          id: Number(id)
+          manga: parseInt(id)
         },
         relations: ['volumes']
       })

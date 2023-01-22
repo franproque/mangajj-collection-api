@@ -68,6 +68,10 @@ export class CollectionService {
       relations: props.relations
     })
   }
+
+  async delete (id: number): Promise<void> {
+    await this.collectionRepository.delete({ id })
+  }
 }
 
 export interface AddCollectionModel {

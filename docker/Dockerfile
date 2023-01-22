@@ -4,7 +4,7 @@ RUN mkdir -p /home/node/app && chown -R node:node /home/node/app
 
 WORKDIR /home/node/app
 
-EXPOSE 8080
+EXPOSE 6565
 #CMD [ "npx","ts-node-dev","src/index.ts" ]
 COPY ./docker/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh

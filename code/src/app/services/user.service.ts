@@ -109,6 +109,9 @@ export class UserService {
   }
 
   async createValidInput (content: AddUserModel): Promise<AddUserModel> {
+    if (content.nome === undefined || content.nome === '') {
+      throw new MissingParamError('Nome não informado')
+    }
     if (content.email === undefined || content.email === '') {
       throw new MissingParamError('Email não informado')
     }
