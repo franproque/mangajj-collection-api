@@ -1,5 +1,6 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
+import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
 import Collection from './collection'
+import Genero from './genero'
 
 @Entity()
 export default class Manga {
@@ -15,7 +16,7 @@ export default class Manga {
   @Column('varchar', { name: 'image', nullable: false })
   image: string
 
-  @Column('integer', { name: 'volumes', nullable: false })
+  @Column('integer', { name: 'volumes', nullable: true })
   volumes: number
 
   @Column('varchar', { name: 'id_externo', nullable: false })
@@ -26,4 +27,9 @@ export default class Manga {
 
   @OneToMany(type => Collection, collection => collection.manga)
   collections?: Collection[]
+
+
+  @ManyToMany(type => Genero, genero => genero.mangas)
+  @JoinTable({ name: 'manga_genero'})
+  generos?:Genero[]
 }

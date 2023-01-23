@@ -4,12 +4,15 @@ import { PaginationResponse, SearchParams } from '../infra/interfaces/pagination
 import { MangaRepository } from '../infra/repositories/manga-repository'
 import { MissingParamError } from '../presentation/errors'
 import { JikanRepository } from '../infra/repositories-external/jikan.repository'
+import { GeneroService } from './genero.service'
 export class MangaService {
   private readonly mangaRepository: MangaRepository
   private readonly jikanRepository: JikanRepository
+  private readonly generoService: GeneroService
   constructor () {
     this.mangaRepository = new MangaRepository()
     this.jikanRepository = new JikanRepository()
+    this.generoService = new GeneroService()
   }
 
   async find (props: FindProps): Promise<MangaModel[]> {
@@ -69,10 +72,10 @@ export class MangaService {
     return true
   }
 
-  async processUpdateManga (manga: UpdateMangaModel): Promise<MangaModel> {
-    await this.validInputCreate(manga)
-    return await this.addManga(manga)
-  }
+  //async processUpdateManga (manga: UpdateMangaModel): Promise<MangaModel> {
+    //await this.validInputCreate(manga)
+    //return await this.addManga(manga)
+  //}
 
   async pagination (pagination: PaginationMangaModel): Promise<PaginationResponse<MangaModel>> {
     const query: SearchParams[] = []
@@ -90,34 +93,76 @@ export class MangaService {
       page: pagination.page,
       search: query
     })
-    console.log(resultado.data.data.length === 0)
-    if (resultado.data.data.length === 0) {
-      const mangas = await this.jikanRepository.findManga(pagination.page, pagination.limit, pagination.search)
-      console.log(mangas.data)
-      for (const manga of mangas.data) {
-        const result = await this.processAddManga({
-          description: manga.synopsis ?? '',
-          idExterno: manga.mal_id.toString(),
-          image: manga.images.jpg.image_url,
-          title: manga.title ?? '',
-          volumes: manga.volumes ?? 1,
-          status: manga.status ?? ''
-        })
-        console.log('result', result)
-      }
-
-      const resultadoBusca = await this.mangaRepository.pagination({
-        limit: pagination.limit,
-        model: 'mangas',
-        page: pagination.page,
-        search: query
-      })
-
-      return resultadoBusca
-    } else {
+  
+   
       return resultado
-    }
+    
   }
+
+  async updateVolumes (id: number, volumes: number): Promise<MangaModel> {
+    const manga = await this.findOne({
+      where: {
+        id
+      }
+    })
+
+    if(manga === null) {
+      throw new Error('Manga não encontrado')
+    }
+
+    if(manga.volumes === null) {
+      manga.volumes = volumes
+    }
+    if(manga.volumes < volumes) {
+      manga.volumes = volumes
+    }
+
+    await this.mangaRepository.update({ id}, manga)
+
+    return manga
+  }
+
+  async sincronizarMangas (): Promise<void> {
+    let page = 1
+    let mangas = await this.jikanRepository.findManga(page,25)
+    let total = mangas.pagination.last_visible_page
+    while(page < mangas.pagination.last_visible_page) {
+      console.log(page/total*100 + '%')
+
+       let mangasSearch = await this.jikanRepository.findManga(page,25)
+
+      for (const manga of mangasSearch.data) {
+        const mangaExiste = await this.findOne({
+          where: {
+            idExterno: manga.mal_id.toString()
+          }
+        })
+        if(mangaExiste === null) {
+          const generosIds:number[] = []
+
+          for (const genero of manga.genres) {
+          generosIds.push((await this.generoService.processAddGenero({
+              name: genero.name,
+          })).id)  
+
+          await this.addManga({
+            title: manga.title?? '',
+            description: manga.synopsis?? '',
+            image: manga.images.jpg.image_url,
+            volumes: manga.volumes?? null,
+            idExterno: manga.mal_id.toString(),
+            status: manga.status,
+            generos: generosIds,
+          })
+        }
+      }
+    }
+
+    await new Promise(resolve => setTimeout(resolve, 3000))
+    page++
+
+  }
+}
 }
 
 export interface UpdateMangaModel {
@@ -133,9 +178,10 @@ export interface AddMangaModel {
   title: string
   description: string
   image: string
-  volumes: number
+  volumes?: number | null
   idExterno: string
   status: string
+  generos: number[]
 }
 
 export interface PaginationMangaModel {
